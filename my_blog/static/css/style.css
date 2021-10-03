@@ -1,0 +1,21 @@
+html, body {
+    width: 100%;
+    margin: 0;
+}
+
+#content {
+    padding: 10px;
+    /*position: relative;*/
+    margin: 15px;
+    width: 60%;
+    border: 1px solid #232323;
+    float: left;
+}
+
+#sidebar {
+    margin: 15px;
+    padding: 10px;
+    width: 32%;
+    border: 1px solid #333333;
+    float: right;
+}

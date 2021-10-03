@@ -1,0 +1,55 @@
+{% extends 'blog/base.html' %}
+
+{% load blog_tags %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p class="tags">
+            Тэги:
+            {% for tag in post.tags.all %}
+                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+                {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+    <p class="date">Опубликовано: {{ post.publish }} | Автор: {{ post.author }}</p>
+    {{post.body|markdown}}
+
+    <p><a href="{% url 'blog:post_share' post.id %}">Поделиться статьёй</a></p>
+
+    <h3>Рекомендуемые статьи</h3>
+    {% for similar_post in similar_posts %}
+        <p><a href="{{ similar_post.get_absolute_url }}">{{ similar_post }}</a></p>
+    {% endfor %}
+
+    {% with comments.count as total_comments %}
+        <h2>{{ total_comments }} comment{{total_comments|pluralize}}</h2>
+    {% endwith %}
+
+    {% for comment in comments %}
+        <div class="comment">
+            <p class="info">
+                Комментарий {{ forloop.counter }}
+            </p>
+            <p>{{ comment.name }} {{ comment.created }} </p>
+            <p>{{ comment.body|linebreaks }}</p>
+            <hr>
+        </div>
+    {% empty %}
+        <p>Комментариев пока нет.</p>
+    {% endfor %}
+
+    {% if new_comment %}
+        <h2>Ваш комментарий был добавлен.</h2>
+    {% else %}
+        <h2>Добавьте новый комментарий</h2>
+        <form action="." method="post">
+            {{ comment_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Добавить комментарий"></p>
+        </form>
+    {% endif %}
+
+    <p><a href="{% url 'blog:post_list' %}">Назад к списку</a></p>
+{% endblock %}
